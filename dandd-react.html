@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <script src="https://unpkg.com/react@16/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js" crossorigin></script>
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+    <title> D&D React</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+  </head>
+  <style>
+      li{
+          background-color: bisque;
+      }
+
+      body{
+          background-color: bisque;
+          text-align: center;
+      }
+
+      button{
+          margin-right: 10px;
+      }
+      #monster-card{
+        text-align: left;
+      }
+
+      button{
+          margin: 5px;
+      }
+
+      #dice-roller{
+          text-align: center;
+          font-size: xx-large;
+      }
+
+      #roll-button{
+          background-color: white;
+      }
+
+      #roll-button:hover{
+          background-color: red;
+          color: white;
+      }
+
+      h6:hover{
+          color:rgb(165, 12, 12)
+      }
+
+
+  </style>
+  <body>
+    <div id="app"></div> 
+    <script type="text/babel">
+
+    class DiceRoller extends React.Component {
+
+        constructor(props){
+            super(props);
+            this.state = {
+                result: 0,
+                dieQuantity: 0,
+                dieSides: 0,
+                dieModifier: 0,
+            }
+        }
+
+        render(){
+            return(
+                <div id="dice-roller">
+                    <h1> Dice Roller </h1>
+                    <button className="btn btn-primary" onClick={this.goBack}> Back </button>
+                    <form>
+                        <div>
+                            <label> Die Quantity: </label>
+                            <input id="die-quantity" type="number"  onChange={this.updateDieQuantity} required="required"/>
+                        </div>
+                        <div>
+                            <label> Die Sides: </label>
+                            <input id="die-sides" type="number" onChange={this.updateDieSides} required="required"/>
+                        </div>
+                        <div>
+                            <label> Modifier: </label>
+                            <input id="die-modifier" type="number" onChange={this.updateDieModifier} placeholder="e.g., 2 or -1"/>
+                        </div>
+                    </form>
+                    <button id="roll-button" className="btn btn-outline-primary" onClick={this.calculateRoll}> Roll </button>
+                    <div>
+                        Result: {this.state.result}
+                    </div>
+                </div>
+            )
+        }
+
+        calculateRoll = () => {
+            var value = (1 + Math.floor(Math.random() * Math.floor(this.state.dieSides))) * parseInt(this.state.dieQuantity) + parseInt(this.state.dieModifier);
+            const value_testing = this.calculationTest(value)
+            if(value_testing === true){
+                return 1;
+            }
+            this.setState({
+                result: value
+            })
+        }
+
+        calculationTest = (value) => {
+            if(value === "NaN"){
+                alert("Something went wrong with the calculation. Make sure all of your input fields are valid numbers")
+            return true    
+            }
+            if(value < 0){
+                alert("Your result is less than 0. Please re-look at your input fields")
+            return true;
+            }
+        }
+
+        updateDieQuantity = (event) =>{
+            this.setState({
+                dieQuantity: event.target.value
+            })
+        }
+
+        updateDieSides = (event) =>{
+            this.setState({
+                dieSides: event.target.value
+            })
+        }
+
+        updateDieModifier = (event) =>{
+            this.setState({
+                dieModifier: event.target.value
+            })
+        }
+        goBack = () => {
+            this.props.updateReturnView('')
+          }
+    }
+
+    class MonsterStats extends React.Component{
+        
+        render(){
+            return(
+                <div>
+                    <div>
+                        Alignment: {this.props.alignment}
+                    </div>
+                    <div>
+                        Armor Class: {this.props.armor_class}
+                    </div>
+                    <div>
+                        Hit Points: {this.props.hit_points}
+                    </div>
+                    <div>
+                        Size: {this.props.size}
+                    </div>
+                    <br/>
+                    <div>
+                        <h4> Stats </h4>
+                        <div>
+                            STR: {this.props.strength}
+                        </div>
+                        <div>
+                            DEX: {this.props.dexterity}
+                        </div>
+                        <div>
+                            CON: {this.props.constitution}
+                        </div>
+                        <div>
+                            WIS: {this.props.wisdom}
+                        </div>
+                        <div>
+                            INT: {this.props.intelligence}
+                        </div>
+                        <div>
+                            CHAR: {this.props.charisma}
+                        </div>
+                    </div>
+                    <br/>
+                    <div>
+                        <h4> Languages </h4>
+                        {this.props.languages}
+                    </div>
+                    <br/>
+                    <div>
+                        <h4> Actions </h4>
+                        <div>
+                            Action Name: {this.props.action_name}
+                        </div>
+                        <div>
+                            Action Decription: {this.props.action_desc}
+                        </div>
+                    </div>
+                </div>
+            )
+        }
+    }
+
+    class MonsterDetails extends React.Component{
+
+        constructor(props){
+            super(props);
+            this.state = {
+                monsters_stats: []
+            }
+        }
+        
+        componentDidMount(){
+            this.loadMonster()
+        }
+        render() {
+            return (
+                <div>
+                    <button className="btn btn-primary" onClick={this.goBack}> Home </button>
+                    <div id="monster-card">
+                        <br/>
+                        <h1>{this.props.name}</h1>
+                        {this.state.monsters_stats.map(monster => {
+                            return<MonsterStats alignment={monster.alignment} 
+                            armor_class={monster.armor_class} 
+                            hit_points={monster.hit_points}
+                            size={monster.size}
+                            constitution = {monster.constitution}
+                            dexterity={monster.dexterity}
+                            strength={monster.strength}
+                            intelligence={monster.intelligence}
+                            wisdom={monster.wisdom}
+                            charisma={monster.charisma}
+                            languages={monster.languages} 
+                            action_name={monster.action_name}
+                            action_desc={monster.action_desc}/>
+                        })}
+                    </div>
+                </div>
+            )
+        }
+
+        loadMonster = () => {
+            fetch(`https://www.dnd5eapi.co/api/monsters/${this.props.index}`)
+            .then(response => response.json())
+            .then(monster_details => {
+                var monster_stats = [];
+                    var alignment = monster_details.alignment
+                    var armor_class = monster_details.armor_class
+                    var hit_points = monster_details.hit_points
+                    var size = monster_details.size
+                    var con = monster_details.constitution 
+                    var dex = monster_details.dexterity 
+                    var str = monster_details.strength 
+                    var intel = monster_details.intelligence 
+                    var wis = monster_details.wisdom 
+                    var charisma = monster_details.charisma
+                    var languages = monster_details.languages 
+                    var action_name = monster_details.actions[0].name
+                    var action_desc = monster_details.actions[0].desc
+                    monster_stats.push({alignment:alignment, 
+                        armor_class:armor_class, 
+                        hit_points:hit_points, 
+                        size:size,
+                        constitution: con,
+                        dexterity: dex,
+                        strength: str,
+                        intelligence: intel,
+                        wisdom: wis,
+                        charisma: charisma,
+                        languages:languages,
+                        action_name:action_name,
+                        action_desc:action_desc
+                        })
+
+                this.setState({
+                monsters_stats:monster_stats
+                })
+            })
+        }
+
+        goBack = () => {
+            this.props.updateReturnView('')
+          }
+    }
+
+    class Monster extends React.Component {
+
+        render() {
+            return(
+                <div>
+                    <h6 onClick={() => {this.props.updateReturnView('Single Monster');this.props.updateName(this.props.name); 
+                        this.props.updateIndex(this.props.index);}}> {this.props.name} </h6>
+                </div>
+            )
+        }
+    }
+
+    class SearchList extends React.Component{
+        constructor(props){
+            super(props);
+            this.state = {
+                search: this.props.search
+            }
+        }
+        
+        componentDidMount(){
+        }
+
+        render(){
+            return(
+                <div>
+                    <h1> Search Results </h1>
+                <button className="btn btn-primary" onClick={this.goBack}> Back </button>
+                <h4/>
+                {this.state.search.map(monster => {
+                    return<Monster name={monster.name} updateReturnView={this.props.updateReturnView} 
+                    updateName = {this.props.updateName} index={monster.index} updateIndex={this.props.updateIndex}/>
+                })}
+                </div>
+            )
+        }
+
+        goBack = () => {
+            this.props.updateReturnView('')
+          }
+    }
+
+    class MonsterList extends React.Component {
+        constructor(props){
+            super(props);
+            this.state = {
+                monsters: [],
+                view: this.props.view,
+            }
+        }
+        componentDidMount(){
+            this.monsterSearch()
+        }
+        render(){
+            return(
+                <div>
+                {this.state.monsters.map(monster => {
+                    return<Monster name={monster.name} updateReturnView={this.props.updateReturnView} 
+                    updateName = {this.props.updateName} index={monster.index} updateIndex={this.props.updateIndex}/>
+                })}
+                </div>
+            )
+        }
+
+        monsterSearch = () => {
+            fetch('https://www.dnd5eapi.co/api/monsters')
+            .then(response => response.json())
+            .then(monsters => {
+                var monster_arr = [];
+                var monst_arr = []
+                for(var i =0; i < 332; i++){
+                    var name = monsters.results[i].name
+                    var index = monsters.results[i].index
+                    monster_arr.push({name:name, index:index})
+                    monst_arr.push({name:name, index:index})
+                };
+                this.setState({
+                    monsters:monster_arr
+                })
+                this.props.updateArr(monst_arr)
+            })
+         }
+    }
+
+      class App extends React.Component {
+
+        constructor(props){
+            super(props);
+            this.state = {
+                returnView: "",
+                name: "",
+                index: "",
+                searchBox: "",
+                monst_arr: [],
+                search_arr: [],
+            }
+        } 
+
+        render() {
+            if(this.state.returnView === "Single Monster"){
+                return(
+                    <MonsterDetails updateReturnView={this.updateReturnView.bind(this)} 
+                    updateName={this.updateName.bind(this)} 
+                    updateIndex={this.updateIndex.bind(this)}
+                    name={this.state.name} index={this.state.index}/>
+                )
+            }
+
+            else if(this.state.returnView === "Dice Roller"){
+                return(
+                    <DiceRoller updateReturnView={this.updateReturnView.bind(this)}/>
+                )
+            }
+            else if(this.state.returnView === "Search"){
+                return(
+                    <SearchList search={this.state.search_arr} updateReturnView={this.updateReturnView.bind(this)}
+                    updateName={this.updateName.bind(this)} updateIndex={this.updateIndex.bind(this)}/>
+                )
+            }
+            else{
+          return (
+            <div>
+                <h1>Quick Reference Monster Manual</h1>
+                <button id="dice-roller-button" className="btn btn-primary" onClick={() =>this.updateReturnView('Dice Roller')}> Dice Roller</button>
+                    <div>
+                        <form>
+                            <input onChange = {this.updateSearchBox} id="search-form" type="text" placeholder="Monster Search"/>
+                        </form>
+                            <button onClick={this.Search} className="btn btn-primary btn-sm" id="search-button"> Search </button>
+                    </div>
+                <br/>
+                <hr/>
+                <div>
+                    <MonsterList view={this.state.view} updateReturnView={this.updateReturnView.bind(this)}
+                    updateName={this.updateName.bind(this)} updateIndex={this.updateIndex.bind(this)} 
+                    updateArr={this.updateArr.bind(this)}/>
+                </div>
+            </div>
+          );
+         }
+        }
+
+        updateReturnView = (value) => {
+          this.setState({
+            returnView: value
+          })
+        }
+
+        updateName = (value) => {
+          this.setState({
+            name: value
+          })
+        }
+
+        updateIndex = (value) => {
+          this.setState({
+            index: value
+          })
+        }
+
+        updateArr = (value) => {
+            this.setState({
+                monst_arr: value
+            })
+        }
+
+        Search = () => {
+            var search_value = this.state.searchBox.toLowerCase().toString();
+            console.log(search_value)
+
+            var monst_arr = this.state.monst_arr
+            var search_arr = [];
+
+            for(var i = 0; i < monst_arr.length; i++){
+                var monster_name = monst_arr[i].index
+                if(monster_name.includes(search_value)){
+                    console.log("found it");
+                    search_arr.push({name:monst_arr[i].name, index:monst_arr[i].index});
+                }
+            }
+            console.log(search_arr)
+            this.setState({
+                search_arr: search_arr,
+                returnView: "Search"
+            })
+        }
+
+        updateSearchBox = (event) => {
+            this.setState({
+                searchBox: event.target.value
+            })
+
+        }
+         
+      }
+
+      ReactDOM.render(<App />, document.querySelector("#app"));
+
+    </script>
+  </body>
+</html>
+
+
+
