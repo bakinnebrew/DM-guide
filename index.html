@@ -293,14 +293,22 @@
         constructor(props){
             super(props);
             this.state = {
-                search: this.props.search
+                search: this.props.search,
+                search_array: this.props.search_array
             }
         }
         
-        componentDidMount(){
-        }
-
         render(){
+            if(this.state.search_array.length === 0){
+                return(
+                <div>
+                    <h1> Search Results </h1>
+                    <button className="btn btn-primary" onClick={this.goBack}> Back </button>
+                    <h4/>
+                    <h3> No Restults Found </h3>
+                </div>
+                )
+            }
             return(
                 <div>
                     <h1> Search Results </h1>
@@ -392,7 +400,7 @@
             }
             else if(this.state.returnView === "Search"){
                 return(
-                    <SearchList search={this.state.search_arr} updateReturnView={this.updateReturnView.bind(this)}
+                    <SearchList search={this.state.search_arr} search_array={this.state.search_arr} updateReturnView={this.updateReturnView.bind(this)}
                     updateName={this.updateName.bind(this)} updateIndex={this.updateIndex.bind(this)}/>
                 )
             }
@@ -453,11 +461,9 @@
             for(var i = 0; i < monst_arr.length; i++){
                 var monster_name = monst_arr[i].index
                 if(monster_name.includes(search_value)){
-                    console.log("found it");
                     search_arr.push({name:monst_arr[i].name, index:monst_arr[i].index});
                 }
             }
-            console.log(search_arr)
             this.setState({
                 search_arr: search_arr,
                 returnView: "Search"
