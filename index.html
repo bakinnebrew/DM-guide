@@ -8,24 +8,23 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
   </head>
   <style>
-      li{
-          background-color: bisque;
-      }
-
       body{
-          background-color: bisque;
-          text-align: center;
+          background-image: url('dragons.jpg');
+          background-repeat: no-repeat;
+          background-attachment: fixed;
+          background-position: center;
+          background-size: 100%;
+          background-color: black;
+          color:rgb(218, 195, 161);
+
       }
 
       button{
           margin-right: 10px;
+          margin: 5px;
       }
       #monster-card{
         text-align: left;
-      }
-
-      button{
-          margin: 5px;
       }
 
       #dice-roller{
@@ -42,8 +41,21 @@
           color: white;
       }
 
+      #total-list{
+          margin-left: 6%;
+      }
+
+      #top-pane{
+          margin-left: 6%;
+      }
+
       h6:hover{
           color:rgb(165, 12, 12)
+      }
+
+      h1{
+          font-family: fantasy;
+          margin-top: 1%;
       }
 
 
@@ -68,7 +80,7 @@
             return(
                 <div id="dice-roller">
                     <h1> Dice Roller </h1>
-                    <button className="btn btn-primary" onClick={this.goBack}> Back </button>
+                    <button className="btn btn-danger" onClick={this.goBack}> Back </button>
                     <form>
                         <div>
                             <label> Die Quantity: </label>
@@ -83,7 +95,7 @@
                             <input id="die-modifier" type="number" onChange={this.updateDieModifier} placeholder="e.g., 2 or -1"/>
                         </div>
                     </form>
-                    <button id="roll-button" className="btn btn-outline-primary" onClick={this.calculateRoll}> Roll </button>
+                    <button id="roll-button" className="btn btn-outline-danger" onClick={this.calculateRoll}> Roll </button>
                     <div>
                         Result: {this.state.result}
                     </div>
@@ -209,7 +221,7 @@
         render() {
             return (
                 <div>
-                    <button className="btn btn-primary" onClick={this.goBack}> Home </button>
+                    <button className="btn btn-danger" onClick={this.goBack}> Home </button>
                     <div id="monster-card">
                         <br/>
                         <h1>{this.props.name}</h1>
@@ -303,16 +315,16 @@
                 return(
                 <div>
                     <h1> Search Results </h1>
-                    <button className="btn btn-primary" onClick={this.goBack}> Back </button>
+                    <button className="btn btn-danger" onClick={this.goBack}> Back </button>
                     <h4/>
-                    <h3> No Results Found </h3>
+                    <h3> No Restults Found </h3>
                 </div>
                 )
             }
             return(
                 <div>
                     <h1> Search Results </h1>
-                <button className="btn btn-primary" onClick={this.goBack}> Back </button>
+                <button className="btn btn-danger" onClick={this.goBack}> Back </button>
                 <h4/>
                 {this.state.search.map(monster => {
                     return<Monster name={monster.name} updateReturnView={this.props.updateReturnView} 
@@ -386,10 +398,12 @@
         render() {
             if(this.state.returnView === "Single Monster"){
                 return(
+                    <div id="total-list">
                     <MonsterDetails updateReturnView={this.updateReturnView.bind(this)} 
                     updateName={this.updateName.bind(this)} 
                     updateIndex={this.updateIndex.bind(this)}
                     name={this.state.name} index={this.state.index}/>
+                    </div>
                 )
             }
 
@@ -400,24 +414,27 @@
             }
             else if(this.state.returnView === "Search"){
                 return(
+                    <div id="total-list">
                     <SearchList search={this.state.search_arr} search_array={this.state.search_arr} updateReturnView={this.updateReturnView.bind(this)}
                     updateName={this.updateName.bind(this)} updateIndex={this.updateIndex.bind(this)}/>
+                    </div>
                 )
             }
             else{
           return (
             <div>
+                <div id="top-pane">
                 <h1>Quick Reference Monster Manual</h1>
-                <button id="dice-roller-button" className="btn btn-primary" onClick={() =>this.updateReturnView('Dice Roller')}> Dice Roller</button>
+                <button id="dice-roller-button" className="btn btn-danger" onClick={() =>this.updateReturnView('Dice Roller')}> Dice Roller</button>
                     <div>
                         <form>
                             <input onChange = {this.updateSearchBox} id="search-form" type="text" placeholder="Monster Search"/>
                         </form>
-                            <button onClick={this.Search} className="btn btn-primary btn-sm" id="search-button"> Search </button>
+                            <button onClick={this.Search} className="btn btn-danger btn-sm" id="search-button"> Search </button>
                     </div>
+                </div>
                 <br/>
-                <hr/>
-                <div>
+                <div id="total-list">
                     <MonsterList view={this.state.view} updateReturnView={this.updateReturnView.bind(this)}
                     updateName={this.updateName.bind(this)} updateIndex={this.updateIndex.bind(this)} 
                     updateArr={this.updateArr.bind(this)}/>
@@ -484,6 +501,8 @@
     </script>
   </body>
 </html>
+
+
 
 
 
