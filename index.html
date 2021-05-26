@@ -63,7 +63,7 @@
   <body>
     <div id="app"></div> 
     <script type="text/babel">
-
+  //component for dice rolling feature
     class DiceRoller extends React.Component {
 
         constructor(props){
@@ -102,7 +102,7 @@
                 </div>
             )
         }
-
+        //calculation takes state and calculates roll
         calculateRoll = () => {
             var value = (1 + Math.floor(Math.random() * Math.floor(this.state.dieSides))) * parseInt(this.state.dieQuantity) + parseInt(this.state.dieModifier);
             const value_testing = this.calculationTest(value)
@@ -113,7 +113,7 @@
                 result: value
             })
         }
-
+        //conditions for testing calculation values
         calculationTest = (value) => {
             if(value === "NaN"){
                 alert("Something went wrong with the calculation. Make sure all of your input fields are valid numbers")
