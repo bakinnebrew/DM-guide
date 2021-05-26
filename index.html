@@ -124,19 +124,19 @@
             return true;
             }
         }
-
+        //function for updating state of die quantity
         updateDieQuantity = (event) =>{
             this.setState({
                 dieQuantity: event.target.value
             })
         }
-
+        //function for updating state of die sides
         updateDieSides = (event) =>{
             this.setState({
                 dieSides: event.target.value
             })
         }
-
+        //function for updating state of modifier
         updateDieModifier = (event) =>{
             this.setState({
                 dieModifier: event.target.value
@@ -146,7 +146,9 @@
             this.props.updateReturnView('')
           }
     }
-
+  
+  //component containing stats of Monster
+  //stats come from fetch request in MonsterDetails component
     class MonsterStats extends React.Component{
         
         render(){
@@ -206,6 +208,8 @@
         }
     }
 
+//component for getting stats of each monster
+//props will be passed to MonsterStats
     class MonsterDetails extends React.Component{
 
         constructor(props){
@@ -215,6 +219,7 @@
             }
         }
         
+        //runs fetch request after component is rendered
         componentDidMount(){
             this.loadMonster()
         }
@@ -245,6 +250,7 @@
             )
         }
 
+        //fetches data from REST API
         loadMonster = () => {
             fetch(`https://www.dnd5eapi.co/api/monsters/${this.props.index}`)
             .then(response => response.json())
@@ -289,6 +295,7 @@
           }
     }
 
+  //component for each monster name
     class Monster extends React.Component {
 
         render() {
@@ -301,6 +308,8 @@
         }
     }
 
+//component that displays array for search results
+//array is passed to App component
     class SearchList extends React.Component{
         constructor(props){
             super(props);
@@ -339,6 +348,7 @@
           }
     }
 
+//component containing array for all monsters fetched from API
     class MonsterList extends React.Component {
         constructor(props){
             super(props);
@@ -380,7 +390,7 @@
             })
          }
     }
-
+//main component of App
       class App extends React.Component {
 
         constructor(props){
